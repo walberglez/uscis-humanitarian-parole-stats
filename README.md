@@ -1,10 +1,10 @@
-# USCIS Humanitarian Parole Stats for Cubans
+# USCIS Humanitarian Parole Stats
 
 ## Description
 
-This project intends to create reports and display stats based on data reported on social media by citizens of Cuba who have received the USCIS Humanitarian Parole https://www.uscis.gov/CHNV.
+This project intends to collects data and stats related to the USCIS Humanitarian Parole https://www.uscis.gov/CHNV.
 
-The data is sourced from https://migentecuba.com/.
+The Cuban Social Media Daily Report data is sourced from https://migentecuba.com/.
 
 ## Process
 
@@ -41,7 +41,7 @@ The data is sourced from https://migentecuba.com/.
 | CaseDate      | Date    |
 | TotalApproved | Number  |
 
-## Answers to Respond
+## Questions to Answer
 
 1. If I applied on date X, when will my case be reviewed following the chronological order.
 2. If I applied on date X, what are the chances of my case being reviewed by date Y.
