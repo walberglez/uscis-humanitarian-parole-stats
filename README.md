@@ -43,8 +43,8 @@ The Cuban Social Media Daily Report data is sourced from https://migentecuba.com
 
 ## Questions to Answer
 
-1. If I applied on date X, when will my case be reviewed following the chronological order.
-2. If I applied on date X, what are the chances of my case being reviewed by date Y.
+1. [ ] If I applied on date X, when will my case be reviewed following the chronological order?
+2. [ ] If I applied on date X, what are the chances of my case being reviewed by date Y?
 
 To answer these questions, we will take into account:
 - 1,000 cases reviewed per day between Haiti, Venezuela, Nicaragua and Cuba.
