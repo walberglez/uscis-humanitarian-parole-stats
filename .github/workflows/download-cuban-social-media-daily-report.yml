@@ -2,7 +2,6 @@ name: download-cuban-social-media-daily-report
 
 on:
   schedule:
-    - cron: '30 12,15 * * *'
     - cron: '*/5 * * * *'
 jobs:
   download:
