@@ -3,7 +3,7 @@ name: download-cuban-social-media-daily-report
 on:
   schedule:
     - cron: '30 12,15 * * *'
-    - cron: '22 3 * * *'
+    - cron: '29 4 * * *'
 jobs:
   download:
     runs-on: ubuntu-latest
