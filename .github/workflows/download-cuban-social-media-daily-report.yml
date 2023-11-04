@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 12 * * *' # 8 AM EST
     - cron: '0 16 * * *' # 12 PM EST
-    - cron: '7 3 * * *'
+    - cron: '8 23 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
