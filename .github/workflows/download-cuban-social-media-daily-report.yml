@@ -2,9 +2,8 @@ name: download-cuban-social-media-daily-report
 
 on:
   schedule:
-    - cron: '0 12 * * *' # 8 AM EST
-    - cron: '0 16 * * *' # 12 PM EST
-    - cron: '8 23 * * *'
+    - cron: '0 12,16 * * *'
+    - cron: '13 3 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
