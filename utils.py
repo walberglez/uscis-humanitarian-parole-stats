@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import os
 import requests
 
@@ -25,6 +25,6 @@ def get_latest_date(path: str) -> date:
     dates.sort()
 
     latest_date_str = dates[-1]
-    return date.strptime(latest_date_str, '%Y-%m-%d')
+    return datetime.strptime(latest_date_str, '%Y-%m-%d').date()
   except:
     return None

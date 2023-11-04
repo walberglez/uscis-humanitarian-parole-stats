@@ -99,6 +99,8 @@ def download_stats(report_date: date) -> None:
       total_unknown = value
     elif date_text == 'Denegados':
       total_denied = value
+    elif value == 0:
+      continue
     else:
       date = get_case_date(report_date, date_text)
       dates.append(date)
