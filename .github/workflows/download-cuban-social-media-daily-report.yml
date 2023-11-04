@@ -2,13 +2,12 @@ name: download-cuban-social-media-daily-report
 
 on:
   schedule:
-    - cron: '0 12,16 * * *'
-    - cron: '13 3 * * *'
+    - cron: '30 12,15 * * *'
+    - cron: '22 3 * * *'
 jobs:
-  build:
+  download:
     runs-on: ubuntu-latest
     steps:
-
       - name: checkout repo content
         uses: actions/checkout@v3 # checkout the repository content to github runner
 
