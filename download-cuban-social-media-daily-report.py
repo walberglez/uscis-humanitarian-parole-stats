@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import sys
 import requests
 from bs4 import BeautifulSoup
@@ -137,6 +137,8 @@ def main():
   start_date = get_latest_date(BASE_REPORT_FOLDER)
   if start_date is None:
     start_date = INITIAL_REPORT_DATE
+  else:
+    start_date += timedelta(1)
   end_date = date.today()
   download_stats_for_range(start_date, end_date)
 
