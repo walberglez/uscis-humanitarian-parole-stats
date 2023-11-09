@@ -2,51 +2,35 @@
 
 ## Description
 
-This project intends to collects data and stats related to the USCIS Humanitarian Parole https://www.uscis.gov/CHNV.
-
-The Cuban Social Media Daily Report data is sourced from https://migentecuba.com/.
+This project intends to collect data and stats related to the USCIS Humanitarian Parole https://www.uscis.gov/CHNV.
 
 ## Process
 
 1. Data is scraped and downloaded from the source website.
 2. Data is transformed into our data structure.
-3. Save daily data to a file in the data folder.
+3. Data is saved to a file in the data folder.
 
-## Reports
+## Data
 
-- [ ] Approved by Date for a Date
-- [ ] Approved by Month for a Date
-- [ ] Approved by Date for a Date Range
-- [ ] Approved by Month for a Date Range
+### Social Media Daily Report
 
-### Data Structure needed by reports
+Daily data is being reported for one country in social media right now, Cuba.
 
-#### Table SocialMediaDailyReport
+The Cuban Social Media Daily Report data is sourced from https://migentecuba.com/.
+
+#### File SocialMediaDailyReport
 
 | Column                   | Type    |
 | ------------------------ | ------- |
-| Id                       | Number  |
-| ReportDate               | Date    |
 | Country                  | String  |
+| ReportDate               | Date    |
 | TotalApproved            | Number  |
 | TotalApprovedUnknownDate | Number  |
 | TotalDenied              | Number  |
 
-#### Table SocialMediaDailyReportDetail
+#### File SocialMediaDailyReportDetail
 
 | Column        | Type    |
 | ------------- | ------- |
-| Id            | Number  |
-| ReportId      | Number  |
 | CaseDate      | Date    |
 | TotalApproved | Number  |
-
-## Questions to Answer
-
-1. [ ] If I applied on date X, when will my case be reviewed following the chronological order?
-2. [ ] If I applied on date X, what are the chances of my case being reviewed by date Y?
-
-To answer these questions, we will take into account:
-- 1,000 cases reviewed per day between Haiti, Venezuela, Nicaragua and Cuba.
-- 500 cases are reviewed in chronological order. It doesn't take into account country quotas.
-- 500 cases are randomly reviewed. It doesn't take into account country quotas.
