@@ -10,7 +10,8 @@ from utils import daterange, get_latest_date, url_ok
 
 CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
   'https://migentecuba.com/lista-de-paroles-aprobados-el-',
-  'https://migentecuba.com/lista-de-paroles-aprobados-'
+  'https://migentecuba.com/lista-de-paroles-aprobados-',
+  'https://notiparole.com/paroles-aprobados-'
 ]
 SPANISH_MONTH_NAMES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 SPANISH_MONTH_ABBR = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -27,9 +28,13 @@ def get_url(date: date) -> str:
   date_str = get_date_str(date)
 
   for base_url in CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL:
-    url = f'{base_url}{date_str}/'
-    if url_ok(url):
-      return url
+    url_v1 = f'{base_url}{date_str}/'
+    if url_ok(url_v1):
+      return url_v1
+    
+    url_v2 = f'{base_url}{date_str}-cuba/'
+    if url_ok(url_v2):
+      return url_v2
   pass
 
 def export_to_csv(df: DataFrame, report_date: date, name: str) -> None:
@@ -60,6 +65,7 @@ def download_stats(report_date: date) -> None:
   url = get_url(report_date)
 
   if url is None:
+    logger.info(f'Stats URL not valid for {report_date}')
     return
 
   page = requests.get(url)
