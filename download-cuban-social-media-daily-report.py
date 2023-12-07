@@ -65,19 +65,18 @@ def download_stats(report_date: date) -> None:
   url = get_url(report_date)
 
   if url is None:
-    logger.info(f'Stats URL not valid for {report_date}')
-    return
+    raise ValueError('stats URL not valid')
 
   page = requests.get(url)
 
   if page.status_code != 200:
-    return
+    raise ValueError('could not get stats page')
 
   soup = BeautifulSoup(page.text, 'lxml')
   table = soup.find('table')
 
   if table is None:
-    return
+    raise ValueError('could not find stats table')
 
   total = None
   total_unknown = None
