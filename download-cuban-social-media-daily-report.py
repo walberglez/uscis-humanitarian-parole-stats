@@ -9,9 +9,10 @@ import logging
 from utils import daterange, get_latest_date, url_ok
 
 CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
-  'https://migentecuba.com/lista-de-paroles-aprobados-el-',
-  'https://migentecuba.com/lista-de-paroles-aprobados-',
-  'https://notiparole.com/paroles-aprobados-'
+  'https://migentecuba.com/lista-de-paroles-aprobados-el-{date}/',
+  'https://migentecuba.com/lista-de-paroles-aprobados-{date}/',
+  'https://notiparole.com/paroles-aprobados-{date}-cuba/',
+  'https://notiparole.com/paroles-aprobados-{date}-en-cuba/'
 ]
 SPANISH_MONTH_NAMES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 SPANISH_MONTH_ABBR = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -28,13 +29,9 @@ def get_url(date: date) -> str:
   date_str = get_date_str(date)
 
   for base_url in CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL:
-    url_v1 = f'{base_url}{date_str}/'
-    if url_ok(url_v1):
-      return url_v1
-    
-    url_v2 = f'{base_url}{date_str}-cuba/'
-    if url_ok(url_v2):
-      return url_v2
+    url = base_url.format(date=date_str)
+    if url_ok(url):
+      return url
   pass
 
 def export_to_csv(df: DataFrame, report_date: date, name: str) -> None:
@@ -53,7 +50,7 @@ def get_case_date(report_date: date, date_text: str) -> date:
     raise ValueError('Invalid case date ' + date_text)
   
   day = int(day_month[0])
-  month_text = day_month[1].strip()
+  month_text = day_month[1].strip()[:3]
   month = SPANISH_MONTH_ABBR.index(month_text) + 1
   year = report_date.year
 
