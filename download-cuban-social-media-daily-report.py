@@ -11,8 +11,10 @@ from utils import daterange, get_latest_date, url_ok
 CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
   'https://migentecuba.com/lista-de-paroles-aprobados-el-{date}/',
   'https://migentecuba.com/lista-de-paroles-aprobados-{date}/',
+  'https://notiparole.com/paroles-aprobados-{date}/',
   'https://notiparole.com/paroles-aprobados-{date}-cuba/',
-  'https://notiparole.com/paroles-aprobados-{date}-en-cuba/'
+  'https://notiparole.com/paroles-aprobados-{date}-en-cuba/',
+  'https://notiparole.com/paroles-aprobados-{date}-de-cuba/'
 ]
 SPANISH_MONTH_NAMES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 SPANISH_MONTH_ABBR = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
