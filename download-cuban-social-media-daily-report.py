@@ -97,11 +97,11 @@ def download_stats(report_date: date) -> None:
 
     if date_text == 'TOTAL':
       total = value
-    elif 'desconoce' in date_text:
+    elif 'desconoce' in date_text \
+      or 'precisar' in date_text \
+      or 'Sin fecha' in date_text:
       total_unknown = value
       total_calculated += total_unknown
-    elif 'precisar' in date_text:
-      total_unknown = value
     elif 'Denegados' in date_text:
       total_denied = value
     elif value == 0:
