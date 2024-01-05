@@ -43,19 +43,20 @@ def export_to_csv(df: DataFrame, report_date: date, name: str) -> None:
   filepath.parent.mkdir(parents=True, exist_ok=True)
   df.to_csv(filepath, index=False)
 
-def get_case_date(report_date: date, date_text: str) -> date:
-  day_month = date_text.split(',')
+def get_case_date(date_text: str) -> date:
+  date_elems = date_text.split(',')
   
-  if day_month.__len__() != 2:
-    day_month = date_text.split('-')
+  if date_elems.__len__() != 2:
+    date_elems = date_text.split('-')
   
-  if day_month.__len__() != 2:
+  if date_elems.__len__() != 2:
     raise ValueError('Invalid case date ' + date_text)
   
-  day = int(day_month[0])
-  month_text = day_month[1].strip()[:3]
+  day = int(date_elems[0])
+  month_text = date_elems[1].strip()[:3]
   month = SPANISH_MONTH_ABBR.index(month_text) + 1
-  year = report_date.year
+  year_text = date_elems[1].strip()[4:]
+  year = int(year_text) if year_text else INITIAL_REPORT_DATE.year 
 
   return date(year, month, day)
 
@@ -107,7 +108,7 @@ def download_stats(report_date: date) -> None:
     elif value == 0:
       continue
     else:
-      date = get_case_date(report_date, date_text)
+      date = get_case_date(date_text)
       dates.append(date)
       approved_cases.append(value)
       total_calculated += value
