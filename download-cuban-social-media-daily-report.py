@@ -50,17 +50,27 @@ def get_case_date(date_text: str) -> date:
   
   if date_elems.__len__() != 2:
     date_elems = date_text.split('-')
-  
-  if date_elems.__len__() != 2:
-    raise ValueError('Invalid case date ' + date_text)
-  
-  day = int(date_elems[0])
-  month_text = date_elems[1].strip()[:3]
-  month = SPANISH_MONTH_ABBR.index(month_text) + 1
-  year_text = date_elems[1].strip()[4:]
-  year = int(year_text) if year_text else INITIAL_REPORT_DATE.year 
 
-  return date(year, month, day)
+  if date_elems.__len__() != 2:
+    date_elems = date_text.split(' ')
+  
+  if date_elems.__len__() == 2:
+    day = int(date_elems[0])
+    month_text = date_elems[1].strip()[:3]
+    month = SPANISH_MONTH_ABBR.index(month_text) + 1
+    year_text = date_elems[1].strip()[4:]
+    year = int(year_text) if year_text else INITIAL_REPORT_DATE.year 
+
+    return date(year, month, day)
+  elif date_elems.__len__() == 3:
+    day = int(date_elems[0])
+    month_text = date_elems[1].strip()[:3]
+    month = SPANISH_MONTH_ABBR.index(month_text) + 1
+    year = int(date_elems[2]) 
+
+    return date(year, month, day)
+  
+  raise ValueError('Invalid case date ' + date_text)
 
 def download_stats(report_date: date) -> None:
   logger.info(f'Download Stats for {report_date}')
@@ -90,7 +100,7 @@ def download_stats(report_date: date) -> None:
 
   for row in table.find_all('tr'):
     cells = row.find_all('td')
-    date_text = cells[0].text.strip()
+    date_text = cells[0].text.strip().lower()
     value = None
 
     try:
@@ -98,14 +108,14 @@ def download_stats(report_date: date) -> None:
     except:
       continue
 
-    if date_text == 'TOTAL':
+    if date_text == 'total':
       total = value
     elif 'desconoce' in date_text \
       or 'precisar' in date_text \
-      or 'Sin fecha' in date_text:
+      or 'sin fecha' in date_text:
       total_unknown = value
       total_calculated += total_unknown
-    elif 'Denegados' in date_text:
+    elif 'denegados' in date_text:
       total_denied = value
     elif value == 0:
       continue
