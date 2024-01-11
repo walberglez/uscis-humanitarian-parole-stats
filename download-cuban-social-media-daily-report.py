@@ -100,6 +100,10 @@ def download_stats(report_date: date) -> None:
 
   for row in table.find_all('tr'):
     cells = row.find_all('td')
+    
+    if not cells:
+      continue
+
     date_text = cells[0].text.strip().lower()
     value = None
 
