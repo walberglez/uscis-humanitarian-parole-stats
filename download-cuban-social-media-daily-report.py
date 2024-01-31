@@ -17,6 +17,7 @@ CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
   'https://notiparole.com/paroles-aprobados-{date}-de-cuba/',
   'https://notiparole.com/paroles-aprobados-{date}-casos-de-cuba/',
   'https://notiparole.com/paroles-aprobados-{date}-casos-de-cubanos/',
+  'https://notiparole.com/paroles-aprobados-{date}-casos-cubanos/',
   'https://notiparole.com/paroles-aprobados-{date}-casos-cuba/',
   'https://notiparole.com/paroles-aprobados-{date}-de-cubanos/',
   'https://notiparole.com/paroles-aprobados-{date}-cuba-cubanos/',
