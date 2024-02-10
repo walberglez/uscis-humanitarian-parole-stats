@@ -22,6 +22,8 @@ CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
   'https://notiparole.com/paroles-aprobados-{date}-de-cubanos/',
   'https://notiparole.com/paroles-aprobados-{date}-cuba-cubanos/',
   'https://notiparole.com/lista-paroles-aprobados-{date}-cuba/',
+  'https://notiparole.com/lista-de-paroles-aprobados-{date}-cuba/',
+  'https://notiparole.com/listado-de-paroles-aprobados-{date}-cuba/',
   'https://notiparole.com/cubanos-con-paroles-aprobados-{date}/'
 ]
 SPANISH_MONTH_NAMES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
