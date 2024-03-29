@@ -12,6 +12,8 @@ CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
   'https://migentecuba.com/lista-de-paroles-aprobados-el-{date}/',
   'https://migentecuba.com/lista-de-paroles-aprobados-{date}/',
   'https://notiparole.com/paroles-aprobados-{date}/',
+  'https://notiparole.com/paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/lista-de-paroles-aprobados-{date}-chnv/',
   'https://notiparole.com/paroles-aprobados-{date}-cuba/',
   'https://notiparole.com/paroles-aprobados-{date}-cubanos/',
   'https://notiparole.com/paroles-aprobados-{date}-en-cuba/',
