@@ -9,11 +9,15 @@ import logging
 from utils import daterange, get_latest_date, url_ok
 
 CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
+  'https://notiparole.com/paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/paroles-aprobados-{date}-de-chnv/',
+  'https://notiparole.com/listas-de-paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/paroles-aprobados-{date}-listado-de-chnv/',
+  'https://notiparole.com/lista-de-paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/listado-de-paroles-aprobados-{date}-chnv/',
   'https://migentecuba.com/lista-de-paroles-aprobados-el-{date}/',
   'https://migentecuba.com/lista-de-paroles-aprobados-{date}/',
   'https://notiparole.com/paroles-aprobados-{date}/',
-  'https://notiparole.com/paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/lista-de-paroles-aprobados-{date}-chnv/',
   'https://notiparole.com/paroles-aprobados-{date}-cuba/',
   'https://notiparole.com/paroles-aprobados-{date}-cubanos/',
   'https://notiparole.com/paroles-aprobados-{date}-en-cuba/',
@@ -28,6 +32,12 @@ CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
   'https://notiparole.com/lista-de-paroles-aprobados-{date}-cuba/',
   'https://notiparole.com/listado-de-paroles-aprobados-{date}-cuba/',
   'https://notiparole.com/cubanos-con-paroles-aprobados-{date}/'
+  'https://notiparole.com/mira-los-paroles-aprobados-{date}-de-chnv/',
+  'https://notiparole.com/estos-son-los-paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/aumentan-los-paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/conoce-los-paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/llegan-los-paroles-aprobados-{date}-chnv/',
+  'https://notiparole.com/bajan-en-domingo-paroles-aprobados-{date}/',
 ]
 SPANISH_MONTH_NAMES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 SPANISH_MONTH_ABBR = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -37,16 +47,32 @@ INITIAL_REPORT_DATE = date(2023, 5, 5)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('download-cuban-social-media-daily-report')
 
-def get_date_str(date: date) -> str:
+def get_date_str_v1(date: date) -> str:
   return f'{date.day}-de-{SPANISH_MONTH_NAMES[date.month - 1]}'
- 
-def get_url(date: date) -> str:
-  date_str = get_date_str(date)
 
+def get_date_str_v2(date: date) -> str:
+  return f'{date.day}-{SPANISH_MONTH_NAMES[date.month - 1]}'
+
+def get_url(date_str: str) -> str:
   for base_url in CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL:
     url = base_url.format(date=date_str)
     if url_ok(url):
       return url
+  pass
+
+def get_url_for_date(date: date) -> str:
+  date_str = get_date_str_v1(date)
+
+  url = get_url(date_str)
+  if url:
+    return url
+    
+  date_str = get_date_str_v2(date)
+
+  url = get_url(date_str)
+  if url:
+    return url
+    
   pass
 
 def export_to_csv(df: DataFrame, report_date: date, name: str) -> None:
@@ -82,10 +108,25 @@ def get_case_date(date_text: str) -> date:
   
   raise ValueError('Invalid case date ' + date_text)
 
+def find_table(text: str):
+  soup = BeautifulSoup(text, 'lxml')
+  tables = soup.find_all('table')
+
+  for table in tables:
+    first_row = table.find('tr')
+
+    if not first_row:
+      continue
+    
+    if 'cuba' in first_row.text.lower():
+      return table 
+
+  return None
+
 def download_stats(report_date: date) -> None:
   logger.info(f'Download Stats for {report_date}')
 
-  url = get_url(report_date)
+  url = get_url_for_date(report_date)
 
   if url is None:
     raise ValueError('stats URL not valid')
@@ -95,8 +136,7 @@ def download_stats(report_date: date) -> None:
   if page.status_code != 200:
     raise ValueError('could not get stats page')
 
-  soup = BeautifulSoup(page.text, 'lxml')
-  table = soup.find('table')
+  table = find_table(page.text)
 
   if table is None:
     raise ValueError('could not find stats table')
