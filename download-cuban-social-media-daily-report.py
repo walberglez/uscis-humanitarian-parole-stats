@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import re
 import sys
 import requests
 from bs4 import BeautifulSoup
@@ -8,39 +9,7 @@ import logging
 
 from utils import daterange, get_latest_date, url_ok
 
-CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = [
-  'https://notiparole.com/paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/paroles-aprobados-{date}-de-chnv/',
-  'https://notiparole.com/listas-de-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/paroles-aprobados-{date}-listado-de-chnv/',
-  'https://notiparole.com/lista-de-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/listado-de-paroles-aprobados-{date}-chnv/',
-  'https://migentecuba.com/lista-de-paroles-aprobados-el-{date}/',
-  'https://migentecuba.com/lista-de-paroles-aprobados-{date}/',
-  'https://notiparole.com/paroles-aprobados-{date}/',
-  'https://notiparole.com/paroles-aprobados-{date}-cuba/',
-  'https://notiparole.com/paroles-aprobados-{date}-cubanos/',
-  'https://notiparole.com/paroles-aprobados-{date}-en-cuba/',
-  'https://notiparole.com/paroles-aprobados-{date}-de-cuba/',
-  'https://notiparole.com/paroles-aprobados-{date}-casos-de-cuba/',
-  'https://notiparole.com/paroles-aprobados-{date}-casos-de-cubanos/',
-  'https://notiparole.com/paroles-aprobados-{date}-casos-cubanos/',
-  'https://notiparole.com/paroles-aprobados-{date}-casos-cuba/',
-  'https://notiparole.com/paroles-aprobados-{date}-de-cubanos/',
-  'https://notiparole.com/paroles-aprobados-{date}-cuba-cubanos/',
-  'https://notiparole.com/lista-paroles-aprobados-{date}-cuba/',
-  'https://notiparole.com/lista-de-paroles-aprobados-{date}-cuba/',
-  'https://notiparole.com/listado-de-paroles-aprobados-{date}-cuba/',
-  'https://notiparole.com/cubanos-con-paroles-aprobados-{date}/',
-  'https://notiparole.com/mira-los-paroles-aprobados-{date}/',
-  'https://notiparole.com/suben-los-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/mira-los-paroles-aprobados-{date}-de-chnv/',
-  'https://notiparole.com/estos-son-los-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/aumentan-los-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/conoce-los-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/llegan-los-paroles-aprobados-{date}-chnv/',
-  'https://notiparole.com/bajan-en-domingo-paroles-aprobados-{date}/'
-]
+CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL = 'https://notiparole.com'
 SPANISH_MONTH_NAMES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 SPANISH_MONTH_ABBR = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 BASE_REPORT_FOLDER = 'data/social-media-daily-report'
@@ -55,27 +24,37 @@ def get_date_str_v1(date: date) -> str:
 def get_date_str_v2(date: date) -> str:
   return f'{date.day}-{SPANISH_MONTH_NAMES[date.month - 1]}'
 
-def get_url(date_str: str) -> str:
-  for base_url in CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL:
-    url = base_url.format(date=date_str)
-    if url_ok(url):
-      return url
-  pass
+def get_page_url(page: int) -> str:
+  base_url = CUBAN_SOCIAL_MEDIA_DAILY_REPORT_BASE_URL
+  
+  if page > 1:
+    return f'{base_url}/page/{page}/'
+  
+  return base_url
 
-def get_url_for_date(date: date) -> str:
-  date_str = get_date_str_v1(date)
+def find_date_urls(text: str, dates: list[str]) -> list[str]:
+  soup = BeautifulSoup(text, 'lxml')
 
-  url = get_url(date_str)
-  if url:
-    return url
+  for date_str in dates:
+    links = soup.find_all(href=re.compile(date_str))
+    if links:
+      return map(lambda link: link.get('href'), links)
+  
+def get_url(date: date) -> list[str]:
+  date_strs = [get_date_str_v1(date), get_date_str_v2(date)]
+  urls = None
+  pagination = 1
+
+  while urls is None:
+    page_url = get_page_url(pagination)
+    if not url_ok(page_url):
+      return None
     
-  date_str = get_date_str_v2(date)
-
-  url = get_url(date_str)
-  if url:
-    return url
+    page = requests.get(page_url)
+    urls = find_date_urls(page.text, date_strs)
+    pagination += 1
     
-  pass
+  return urls
 
 def export_to_csv(df: DataFrame, report_date: date, name: str) -> None:
   date = report_date.strftime("%Y-%m-%d")
@@ -128,19 +107,22 @@ def find_table(text: str):
 def download_stats(report_date: date) -> None:
   logger.info(f'Download Stats for {report_date}')
 
-  url = get_url_for_date(report_date)
+  urls = get_url(report_date)
 
-  if url is None:
-    raise ValueError('stats URL not valid')
+  if urls is None:
+    raise ValueError('stats URL not found')
 
-  page = requests.get(url)
+  for url in urls:
+    page = requests.get(url)
 
-  if page.status_code != 200:
-    raise ValueError('could not get stats page')
+    if page.status_code != 200:
+      raise ValueError('could not get stats page')
 
-  table = find_table(page.text)
+    table = find_table(page.text)
+    if not table:
+      break
 
-  if table is None:
+  if not table:
     raise ValueError('could not find stats table')
 
   total = None
