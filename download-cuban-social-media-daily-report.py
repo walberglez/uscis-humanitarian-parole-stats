@@ -75,8 +75,7 @@ def get_case_date(date_text: str) -> date:
     day = int(date_elems[0])
     month_text = date_elems[1].strip()[:3]
     month = SPANISH_MONTH_ABBR.index(month_text) + 1
-    year_text = date_elems[1].strip()[4:]
-    year = int(year_text) if year_text else INITIAL_REPORT_DATE.year 
+    year = INITIAL_REPORT_DATE.year 
 
     return date(year, month, day)
   elif date_elems.__len__() == 3:
