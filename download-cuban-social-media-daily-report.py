@@ -86,7 +86,7 @@ def get_case_date(date_text: str) -> date:
 
     return date(year, month, day)
   
-  raise ValueError('Invalid case date ' + date_text)
+  return None
 
 def find_table(text: str):
   soup = BeautifulSoup(text, 'lxml')
@@ -158,9 +158,13 @@ def download_stats(report_date: date) -> None:
       continue
     else:
       date = get_case_date(date_text)
-      dates.append(date)
-      approved_cases.append(value)
-      total_calculated += value
+      
+      if date is None:
+        logger.error(f'Invalid case date {date_text}')
+      else:
+        dates.append(date)
+        approved_cases.append(value)
+        total_calculated += value
 
   if total is None:
     total = total_calculated
